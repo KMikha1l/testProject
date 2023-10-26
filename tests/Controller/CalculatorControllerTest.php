@@ -2,12 +2,13 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\CalculatorController;
+use App\Requests\AgeCalculatorRequest;
 use App\Requests\SimpleCalculatorRequest;
+use App\Resources\AgeCalculatorResource;
 use App\Resources\SimpleCalculatorResource;
+use App\Services\CalculateAgeService;
 use App\Services\SimpleCalculatorService;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CalculatorControllerTest extends TestCase
 {
@@ -49,6 +50,42 @@ class CalculatorControllerTest extends TestCase
                 'operand2' => 11,
                 'operation' => '+',
                 'result' => 36
+            ]
+        );
+    }
+
+    public function testCalculateAge()
+    {
+        $request = $this->createMock(AgeCalculatorRequest::class);
+
+        $request->expects(self::any())
+            ->method('getBirthDate')
+            ->willReturn('15.05.1998');
+
+        $request->expects(self::any())
+            ->method('getCalculationDate')
+            ->willReturn('15.05.2015');
+
+        $service = new CalculateAgeService(
+            birthDate: $request->getBirthDate(),
+            calculationDate: $request->getCalculationDate()
+        );
+
+        $result = $service->execute();
+        self::assertEquals($result, 17);
+
+        $resource = new AgeCalculatorResource(
+            birthDate: $request->getBirthDate(),
+            calculationDate: $request->getCalculationDate(),
+            age: $result
+        );
+
+        self::assertEquals(
+            $resource->toArray(),
+            [
+                'calculationDate' => "15.05.2015",
+                'birthDate' => "15.05.1998",
+                'age' => 17,
             ]
         );
     }
