@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\Exception\ServiceException;
 use DateTime;
 
 class CalculateAgeService implements ServiceInterface
@@ -15,6 +16,10 @@ class CalculateAgeService implements ServiceInterface
     {
         $birthDate = DateTime::createFromFormat('d.m.Y', $this->birthDate);
         $calculationDate = DateTime::createFromFormat('d.m.Y', $this->calculationDate);
+
+        if ($birthDate > $calculationDate) {
+            throw new ServiceException('A birth date is bigger than calculation date.');
+        }
 
         return $calculationDate
             ->diff($birthDate)->y;

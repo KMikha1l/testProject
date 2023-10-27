@@ -2,14 +2,20 @@
 
 namespace App\Resources;
 
-class AgeCalculatorResource extends BaseResource
+use JsonSerializable;
+
+class AgeCalculatorResource implements JsonSerializable
 {
 
-    public function __construct(private string $birthDate, private string $calculationDate, private int $age)
+    public function __construct(
+        private readonly string $birthDate,
+        private readonly string $calculationDate,
+        private readonly int $age
+    )
     {
     }
 
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'calculationDate' => $this->calculationDate,

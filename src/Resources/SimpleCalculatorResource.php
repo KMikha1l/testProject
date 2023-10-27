@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Resources;
+use JsonSerializable;
 
-class SimpleCalculatorResource extends BaseResource
+class SimpleCalculatorResource implements JsonSerializable
 {
     public function __construct(
         private string $operation,
@@ -13,7 +14,7 @@ class SimpleCalculatorResource extends BaseResource
     {
     }
 
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'operation' => $this->operation,

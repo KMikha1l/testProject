@@ -2,29 +2,20 @@
 
 namespace App\Requests;
 
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Type;
 
-class AgeCalculatorRequest extends BaseRequest
+class AgeCalculatorRequest
 {
-    #[Type('string')]
-    #[Regex('/^\d{2}\.\d{2}\.\d{4}$/s')]
-    #[NotBlank()]
-    protected string $birthDate;
+    public function __construct(
+        #[DateTime(format: "d.m.Y")]
+        #[NotBlank()]
+        public readonly string $birthDate,
 
-    #[Type('string')]
-    #[Regex('/^\d{2}\.\d{2}\.\d{4}$/s')]
-    #[NotBlank()]
-    protected string $calculationDate;
-
-    public function getBirthDate(): string
+        #[DateTime(format: "d.m.Y")]
+        public string $calculationDate
+    )
     {
-        return $this->birthDate;
-    }
-
-    public function getCalculationDate(): string
-    {
-        return $this->calculationDate;
+        $this->calculationDate = $calculationDate ?: (new \DateTime())->format('d.m.Y');
     }
 }
